@@ -64,7 +64,7 @@ export default function Sidebar({ page, onNavigate, counts }) {
       <div className="m-3 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
         <p className="text-[11px] font-bold text-zinc-200">Built for EarlyJobs.ai</p>
         <p className="mt-1 text-[11px] leading-relaxed text-zinc-500">
-          Mini ATS assignment · Full Stack Developer Intern
+          Mini ATS assignment - Full Stack Developer Intern
         </p>
         <div className="mt-3 flex items-center gap-3 text-[11px] text-zinc-500">
           <span className="inline-flex items-center gap-1">

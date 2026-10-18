@@ -147,10 +147,10 @@ for (const vp of VIEWPORTS) {
 await browser.close();
 fs.writeFileSync(`${OUT}/report.json`, JSON.stringify(report, null, 2));
 
-// ── Summary ──
-console.log('\n══════════════ SUMMARY ══════════════');
+// -- Summary --
+console.log('\n============== SUMMARY ==============');
 for (const v of report.viewports) {
-  console.log(`\n■ ${v.name} (${v.width}×${v.height})${v.consoleErrors.length ? '  ⚠ console: ' + v.consoleErrors.length : ''}`);
+  console.log(`\n* ${v.name} (${v.width}x${v.height})${v.consoleErrors.length ? '  WARN console: ' + v.consoleErrors.length : ''}`);
   for (const [p, a] of Object.entries(v.pages)) {
     const bits = [];
     if (a.docOverflow > 1) bits.push(`OVERFLOW+${a.docOverflow}px`);

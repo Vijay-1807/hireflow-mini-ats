@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Mail, Phone, MapPin, Briefcase, CalendarDays, ExternalLink,
@@ -139,7 +139,7 @@ export default function CandidateDetail({ candidate, onUpdated, onDeleted, onEdi
             <DetailRow icon={Mail} value={candidate.email} href={`mailto:${candidate.email}`} />
             <DetailRow icon={Phone} value={candidate.phone || 'Not provided'} />
             <DetailRow icon={MapPin} value={candidate.location || 'Not provided'} />
-            <DetailRow icon={Briefcase} value={`${candidate.experience_years ?? 0} yrs experience · expects ${formatSalary(candidate.expected_salary)}`} />
+            <DetailRow icon={Briefcase} value={`${candidate.experience_years ?? 0} yrs experience - expects ${formatSalary(candidate.expected_salary)}`} />
             <DetailRow icon={CalendarDays} value={`Applied ${formatDate(candidate.created_at)}`} />
             {candidate.resume_url && (
               <DetailRow icon={ExternalLink} value="View resume" href={candidate.resume_url} />
@@ -178,7 +178,7 @@ export default function CandidateDetail({ candidate, onUpdated, onDeleted, onEdi
               className="glass-input"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Add a note…"
+              placeholder="Add a note..."
             />
             <button type="submit" disabled={adding || !note.trim()} className="btn-primary !px-3.5">
               {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageSquare className="h-4 w-4" />}

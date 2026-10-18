@@ -1,4 +1,4 @@
-﻿import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Users, UserCheck, TrendingUp, Timer, Star, Briefcase,
   ArrowUpRight, ArrowDownRight, Activity,
@@ -86,13 +86,13 @@ export default function Dashboard({ metrics, loading, error, onNavigate }) {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-4">
         {cards.map((card) => (
           <motion.div
             key={card.label}
             variants={item}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="glass group relative overflow-hidden rounded-2xl p-5"
+            className="glass group relative w-[74vw] max-w-[300px] shrink-0 snap-start overflow-hidden rounded-2xl p-5 sm:w-auto sm:max-w-none"
           >
             <div className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br ${card.gradient} opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100`} />
             <div className="relative flex items-start justify-between">
@@ -115,7 +115,7 @@ export default function Dashboard({ metrics, loading, error, onNavigate }) {
         <motion.div variants={item} className="glass rounded-2xl p-5 xl:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold text-white">Applications — last 14 days</h2>
+              <h2 className="text-sm font-bold text-white">Applications - last 14 days</h2>
               <p className="text-xs text-zinc-500">New candidates entering the pipeline</p>
             </div>
             <span className="chip"><Briefcase className="h-3 w-3" /> {summary.last7} this week</span>
@@ -168,7 +168,7 @@ export default function Dashboard({ metrics, loading, error, onNavigate }) {
                   <div className="mb-1.5 flex items-center justify-between text-xs">
                     <span className="font-medium text-zinc-300">{stage.label}</span>
                     <span className="tabular-nums text-zinc-500">
-                      <span className="font-bold text-white">{stage.count}</span> · {stage.conversion}%
+                      <span className="font-bold text-white">{stage.count}</span> - {stage.conversion}%
                     </span>
                   </div>
                   <div className="h-2.5 overflow-hidden rounded-full bg-white/[0.05]">
@@ -227,7 +227,7 @@ export default function Dashboard({ metrics, loading, error, onNavigate }) {
                   <Avatar name={c.name} size="sm" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-semibold text-zinc-200">{c.name}</p>
-                    <p className="truncate text-[10px] text-zinc-500">{c.role} · {formatDate(c.created_at)}</p>
+                    <p className="truncate text-[10px] text-zinc-500">{c.role} - {formatDate(c.created_at)}</p>
                   </div>
                   <StageBadge stage={c.stage} size="sm" />
                 </motion.li>

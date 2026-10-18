@@ -36,6 +36,8 @@ const STAGE_WEIGHTS = [
   ['offer', 8], ['hired', 10], ['rejected', 12],
 ];
 
+const STAGE_MINIMUM = { applied: 8, screening: 8, interview: 8, offer: 4, hired: 4, rejected: 6 };
+
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -57,6 +59,19 @@ function weightedStage() {
   return 'applied';
 }
 
+function stageSequence(total) {
+  const stages = [];
+  for (const [stage] of STAGE_WEIGHTS) {
+    for (let i = 0; i < (STAGE_MINIMUM[stage] || 0); i++) stages.push(stage);
+  }
+  while (stages.length < total) stages.push(weightedStage());
+  for (let i = stages.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [stages[i], stages[j]] = [stages[j], stages[i]];
+  }
+  return stages.slice(0, total);
+}
+
 function daysAgo(n) {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -69,12 +84,12 @@ const STAGE_MESSAGES = {
   interview: 'Technical interview round scheduled with the panel.',
   offer: 'Offer letter generated and sent to candidate.',
   hired: 'Candidate onboarding started. Welcome aboard!',
-  rejected: 'Not moving forward this time — profile kept in talent pool.',
+  rejected: 'Not moving forward this time - profile kept in talent pool.',
 };
 
 export function seed({ fresh = false } = {}) {
   if (fresh) {
-    db.exec('DELETE FROM activities; DELETE FROM candidates; DELETE sqlite_sequence WHERE name IN ("candidates","activities");');
+    db.exec("DELETE FROM activities; DELETE FROM candidates; DELETE FROM sqlite_sequence WHERE name IN ('candidates','activities');");
   }
 
   const count = db.prepare('SELECT COUNT(*) AS c FROM candidates').get().c;
@@ -96,6 +111,7 @@ export function seed({ fresh = false } = {}) {
   `);
 
   const usedEmails = new Set();
+  const stages = stageSequence(48);
 
   const run = db.transaction(() => {
     for (let i = 0; i < 48; i++) {
@@ -106,7 +122,7 @@ export function seed({ fresh = false } = {}) {
       while (usedEmails.has(email)) email = `${slug}${n++}@gmail.com`;
       usedEmails.add(email);
 
-      const stage = weightedStage();
+      const stage = stages[i];
       const source = pick(SOURCES);
       const daysBack = Math.floor(Math.random() * 60);
       const createdAt = daysAgo(daysBack);

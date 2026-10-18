@@ -62,6 +62,15 @@ textarea:focus-visible {
   background: rgba(161, 161, 170, 0.4);
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @layer components {
   .glass {
     background: rgba(16, 18, 22, 0.78);

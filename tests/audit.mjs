@@ -5,10 +5,10 @@ const issues = [];
 const suppress = new Set(); // e.g. "http.409" during intentional-conflict tests
 let passed = 0;
 const log = (...a) => console.log(...a);
-const ok = (name) => { passed++; log(`  ✓ ${name}`); };
+const ok = (name) => { passed++; log(`  OK ${name}`); };
 const bad = (page, name, detail = '') => {
   issues.push({ page, name, detail });
-  log(`  ✗ ${name}${detail ? ` — ${detail}` : ''}`);
+  log(`  FAIL ${name}${detail ? ` - ${detail}` : ''}`);
 };
 
 function track(page, label) {
@@ -29,7 +29,7 @@ function track(page, label) {
   page.on('requestfailed', (req) => {
     const url = req.url();
     if (url.includes('favicon')) return;
-    issues.push({ page: label, name: 'requestfailed', detail: `${req.method()} ${url} — ${req.failure()?.errorText}` });
+    issues.push({ page: label, name: 'requestfailed', detail: `${req.method()} ${url} - ${req.failure()?.errorText}` });
     log(`  ! requestfailed (${label}): ${url}`);
   });
   page.on('response', (res) => {
@@ -54,11 +54,11 @@ async function step(name, fn, pageLabel) {
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 
-// ═══════════ DASHBOARD ═══════════
+// =========== DASHBOARD ===========
 {
   const page = await ctx.newPage();
   track(page, 'dashboard');
-  log('\n═══ DASHBOARD ═══');
+  log('\n=== DASHBOARD ===');
 
   await step('loads without errors', async () => {
     await page.goto(BASE, { waitUntil: 'networkidle' });
@@ -80,7 +80,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
 
   await step('charts render', async () => {
     const svgs = await page.locator('.recharts-surface').count();
-    if (svgs < 2) bad('dashboard', `expected ≥2 charts, got ${svgs}`);
+    if (svgs < 2) bad('dashboard', `expected >=2 charts, got ${svgs}`);
     else ok(`${svgs} chart surfaces`);
     const funnelBars = await page.locator('.h-2\\.5.overflow-hidden').count();
     log(`  funnel bars: ${funnelBars}`);
@@ -106,11 +106,11 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
   await page.close();
 }
 
-// ═══════════ CANDIDATES ═══════════
+// =========== CANDIDATES ===========
 {
   const page = await ctx.newPage();
   track(page, 'candidates');
-  log('\n═══ CANDIDATES ═══');
+  log('\n=== CANDIDATES ===');
   await page.goto(BASE, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: /Candidates/ }).click();
 
@@ -127,7 +127,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     await page.waitForTimeout(1000);
     const after = await page.locator('tbody tr').count();
     if (after === 0 || after >= before) bad('candidates', `search: before=${before} after=${after}`);
-    else ok(`search "react": ${before} → ${after} rows`);
+    else ok(`search "react": ${before} -> ${after} rows`);
     await page.getByPlaceholder(/Search name/).fill('zzz_no_match_zzz');
     await page.waitForTimeout(1000);
     const empty = await page.locator('text=No candidates match').count();
@@ -145,7 +145,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     await page.waitForTimeout(700);
     const desc = await page.locator('tbody tr td p').first().textContent();
     if (asc === desc) bad('candidates', 'sort toggle no effect', `${asc} === ${desc}`);
-    else ok(`sort: "${asc}" ⇄ "${desc}"`);
+    else ok(`sort: "${asc}" <-> "${desc}"`);
   }, 'candidates');
 
   await step('stage filter works', async () => {
@@ -183,7 +183,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
   }, 'candidates');
 
   await step('note adds to timeline', async () => {
-    const noteInput = page.locator('input[placeholder="Add a note…"]');
+    const noteInput = page.locator('input[placeholder="Add a note..."]');
     await noteInput.waitFor({ timeout: 5000 });
     await noteInput.fill('Audit note 12345');
     await noteInput.press('Enter');
@@ -232,7 +232,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     await page.locator('input[placeholder="Aarav Sharma"]').fill('Zed Matrix');
     await page.locator('input[type="email"]').fill('zed.matrix@example.com');
     await page.locator('input[list="role-options"]').fill('Backend Developer');
-    const skillInput = page.locator('input[placeholder="Type a skill + Enter…"]');
+    const skillInput = page.locator('input[placeholder="Type a skill + Enter..."]');
     await skillInput.fill('Rust');
     await skillInput.press('Enter');
     await page.waitForTimeout(200);
@@ -315,11 +315,11 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
   await page.close();
 }
 
-// ═══════════ PIPELINE ═══════════
+// =========== PIPELINE ===========
 {
   const page = await ctx.newPage();
   track(page, 'pipeline');
-  log('\n═══ PIPELINE ═══');
+  log('\n=== PIPELINE ===');
   await page.goto(BASE, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: /Pipeline/ }).click();
 
@@ -357,7 +357,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     const c = (res.data || []).find((x) => x.name === name);
     log(`  card "${name}" now in stage: ${c?.stage}`);
     if (!c) bad('pipeline', 'dragged candidate not found');
-    else ok(`drag moved "${name}" → ${c.stage}`);
+    else ok(`drag moved "${name}" -> ${c.stage}`);
   }, 'pipeline');
 
   await step('column counts match cards', async () => {
@@ -383,11 +383,11 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
   await page.close();
 }
 
-// ═══════════ MOBILE ═══════════
+// =========== MOBILE ===========
 {
   const page = await ctx.newPage();
   track(page, 'mobile');
-  log('\n═══ MOBILE 390×844 ═══');
+  log('\n=== MOBILE 390x844 ===');
   await page.setViewportSize({ width: 390, height: 844 });
 
   await step('mobile dashboard + bottom nav', async () => {
@@ -427,12 +427,12 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
   await page.close();
 }
 
-// ═══════════ NETWORK / API EDGE CASES ═══════════
+// =========== NETWORK / API EDGE CASES ===========
 {
   const page = await ctx.newPage();
   track(page, 'api');
   suppress.add('expected-4xx');
-  log('\n═══ API EDGE CASES ═══');
+  log('\n=== API EDGE CASES ===');
   await page.goto(BASE, { waitUntil: 'domcontentloaded' });
 
   await step('API validation errors surface', async () => {
@@ -481,10 +481,10 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
 
 await browser.close();
 
-log('\n\n════════════════════════════════');
+log('\n\n================================');
 log(`PASSED: ${passed}  |  ISSUES: ${issues.length}`);
 if (issues.length) {
   log('\nISSUE LIST:');
-  for (const i of issues) log(` [${i.page}] ${i.name}${i.detail ? ` — ${i.detail}` : ''}`);
+  for (const i of issues) log(` [${i.page}] ${i.name}${i.detail ? ` - ${i.detail}` : ''}`);
 }
 process.exit(issues.length ? 1 : 0);

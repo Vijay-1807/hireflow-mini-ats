@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { pushOverlay, popOverlay } from '../lib/overlay';
@@ -10,10 +11,12 @@ export default function Drawer({ open, onClose, children }) {
     return () => popOverlay(onClose);
   }, [open, onClose]);
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-[60]">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -26,7 +29,7 @@ export default function Drawer({ open, onClose, children }) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-            className="absolute inset-y-0 right-0 flex w-full max-w-lg flex-col border-l border-white/[0.1] bg-ink-900/85 backdrop-blur-2xl shadow-[-20px_0_60px_rgba(0,0,0,0.5)]"
+            className="absolute inset-y-0 right-0 flex w-full max-w-lg flex-col border-l border-white/[0.1] bg-ink-900/95 backdrop-blur-2xl shadow-[-20px_0_60px_rgba(0,0,0,0.5)]"
           >
             <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-brand-400/50 via-brand-400/15 to-transparent" />
             <button
@@ -40,6 +43,7 @@ export default function Drawer({ open, onClose, children }) {
           </motion.aside>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Terminal } from 'lucide-react';
 import Background from './components/Background';
 import Sidebar, { MobileNav } from './components/Sidebar';
@@ -9,9 +9,8 @@ import Pipeline from './pages/Pipeline';
 import { useMetrics } from './hooks/useApi';
 
 const pageTransition = {
-  initial: { opacity: 0, y: 16, filter: 'blur(6px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
-  exit: { opacity: 0, y: -12, filter: 'blur(6px)' },
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
   transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
 };
 
@@ -57,15 +56,13 @@ export default function App() {
         </header>
 
         <main className="px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-10">
-          <AnimatePresence mode="wait">
-            <motion.div key={page} {...pageTransition}>
-              {page === 'dashboard' && (
-                <Dashboard metrics={metrics.data} loading={metrics.loading} error={metrics.error} onNavigate={navigate} />
-              )}
-              {page === 'candidates' && <CandidatesPage refreshToken={refreshToken} />}
-              {page === 'pipeline' && <Pipeline refreshToken={refreshToken} />}
-            </motion.div>
-          </AnimatePresence>
+          <motion.div key={page} {...pageTransition}>
+            {page === 'dashboard' && (
+              <Dashboard metrics={metrics.data} loading={metrics.loading} error={metrics.error} onNavigate={navigate} />
+            )}
+            {page === 'candidates' && <CandidatesPage refreshToken={refreshToken} />}
+            {page === 'pipeline' && <Pipeline refreshToken={refreshToken} />}
+          </motion.div>
         </main>
       </div>
 

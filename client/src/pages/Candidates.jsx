@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Plus, LayoutGrid, List, SlidersHorizontal, X, ChevronUp, ChevronDown,
@@ -135,7 +135,7 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
           <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Candidates</h1>
           <p className="mt-1 text-sm text-zinc-400">
             {meta.total} {meta.total === 1 ? 'candidate' : 'candidates'} found
-            {activeFilters ? ` · ${activeFilters} filter${activeFilters > 1 ? 's' : ''} active` : ''}
+            {activeFilters ? ` - ${activeFilters} filter${activeFilters > 1 ? 's' : ''} active` : ''}
           </p>
         </div>
         <button onClick={openCreate} className="btn-primary">
@@ -149,7 +149,7 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
             <input
               className="glass-input !pl-10"
-              placeholder="Search name, email, skill, role, location…"
+              placeholder="Search name, email, skill, role, location..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -316,18 +316,15 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
                 </tr>
               </thead>
               <tbody>
-                <AnimatePresence mode="popLayout">
-                  {rows.map((c, i) => (
-                    <motion.tr
-                      key={c.id}
-                      layout
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ delay: Math.min(i * 0.02, 0.3) }}
-                      onClick={() => openDetail(c)}
-                      className="table-row-hover cursor-pointer border-b border-white/[0.04] last:border-0"
-                    >
+                {rows.map((c, i) => (
+                  <motion.tr
+                    key={c.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: Math.min(i * 0.02, 0.3) }}
+                    onClick={() => openDetail(c)}
+                    className="table-row-hover cursor-pointer border-b border-white/[0.04] last:border-0"
+                  >
                       <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
@@ -368,9 +365,8 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
+                  </motion.tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -396,7 +392,7 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold text-white">{c.name}</p>
                     <p className="truncate text-xs text-zinc-400">{c.role}</p>
-                    <p className="mt-0.5 truncate text-[11px] text-zinc-600">{c.location || '—'} · {(c.source || '').replace('-', ' ')}</p>
+                    <p className="mt-0.5 truncate text-[11px] text-zinc-600">{c.location || '-'} - {(c.source || '').replace('-', ' ')}</p>
                   </div>
                 </div>
                 <div className="relative mt-4 flex items-center justify-between">
@@ -451,7 +447,7 @@ function Pagination({ meta, page, setPage }) {
   return (
     <div className="flex items-center justify-between border-t border-white/[0.07] px-4 py-3">
       <p className="text-xs text-zinc-500">
-        Page {meta.page} of {meta.totalPages} · {meta.total} total
+        Page {meta.page} of {meta.totalPages} - {meta.total} total
       </p>
       <div className="flex items-center gap-2">
         <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-ghost !px-3 !py-1.5 !text-xs disabled:opacity-30">

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X, Loader2, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -141,7 +141,7 @@ export default function CandidateForm({ candidate, onSaved, onCancel }) {
         <Field label="Experience (years)" error={errors.experience_years}>
           <input className="glass-input" type="number" step="0.5" min="0" value={form.experience_years} onChange={set('experience_years')} placeholder="2.5" />
         </Field>
-        <Field label="Expected salary (₹ / year)">
+        <Field label="Expected salary (Rs / year)">
           <input className="glass-input" type="number" min="0" step="10000" value={form.expected_salary} onChange={set('expected_salary')} placeholder="600000" />
         </Field>
         <Field label="Resume URL">
@@ -179,7 +179,7 @@ export default function CandidateForm({ candidate, onSaved, onCancel }) {
                 }
                 if (e.key === 'Backspace' && !skillInput && skills.length) removeSkill(skills[skills.length - 1]);
               }}
-              placeholder="Type a skill + Enter…"
+              placeholder="Type a skill + Enter..."
             />
             {skillInput && (
               <button type="button" onClick={() => addSkill()} className="btn-icon !p-1" aria-label="Add skill">
@@ -190,7 +190,7 @@ export default function CandidateForm({ candidate, onSaved, onCancel }) {
         </div>
       </Field>
 
-      <Field label={`Rating — ${form.rating || 0}/5`}>
+      <Field label={`Rating - ${form.rating || 0}/5`}>
         <div className="rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 py-2.5">
           <StarRating value={Number(form.rating) || 0} onChange={(v) => setForm((f) => ({ ...f, rating: v }))} size={18} />
         </div>
@@ -201,15 +201,15 @@ export default function CandidateForm({ candidate, onSaved, onCancel }) {
           className="glass-input min-h-[88px] resize-y"
           value={form.notes || ''}
           onChange={set('notes')}
-          placeholder="Interview observations, salary discussion, availability…"
+          placeholder="Interview observations, salary discussion, availability..."
         />
       </Field>
 
-      <div className="flex items-center justify-end gap-3 border-t border-white/[0.06] pt-5">
+      <div className="sticky bottom-0 z-10 -mx-5 -mb-5 mt-1 flex items-center justify-end gap-3 border-t border-white/[0.08] bg-ink-900/95 px-5 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6">
         <button type="button" onClick={onCancel} className="btn-ghost">Cancel</button>
         <button type="submit" disabled={saving} className="btn-primary">
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          {saving ? 'Saving…' : editing ? 'Save changes' : 'Add candidate'}
+          {saving ? 'Saving...' : editing ? 'Save changes' : 'Add candidate'}
         </button>
       </div>
     </form>

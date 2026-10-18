@@ -1,4 +1,4 @@
-﻿import { Component } from 'react';
+import { Component } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 export default class ErrorBoundary extends Component {
@@ -26,7 +26,7 @@ export default class ErrorBoundary extends Component {
           </div>
           <h1 className="text-lg font-bold text-white">Something went wrong</h1>
           <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-            The app hit an unexpected error. Your data is safe — try reloading.
+            The app hit an unexpected error. Your data is safe - try reloading.
           </p>
           <p className="mt-3 rounded-xl border border-white/[0.08] bg-white/[0.03] p-2.5 font-mono text-[11px] text-zinc-500">
             {String(this.state.error?.message || this.state.error)}

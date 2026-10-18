@@ -1,5 +1,5 @@
-﻿import { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors,
   useDroppable, closestCorners,
@@ -84,7 +84,7 @@ export default function Pipeline({ refreshToken }) {
 
     try {
       await candidatesApi.update(candidate.id, { stage: targetStage });
-      toast.success(`${candidate.name} → ${STAGE_META[targetStage].label}`);
+      toast.success(`${candidate.name} -> ${STAGE_META[targetStage].label}`);
     } catch (err) {
       setData((d) => ({
         ...d,
@@ -103,7 +103,7 @@ export default function Pipeline({ refreshToken }) {
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Hiring pipeline</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Drag candidates between stages — changes save instantly.
+            Drag candidates between stages - changes save instantly.
           </p>
         </div>
         <button onClick={() => setFormOpen(true)} className="btn-primary">
@@ -112,7 +112,7 @@ export default function Pipeline({ refreshToken }) {
       </motion.div>
 
       {loading ? (
-        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3 2xl:grid-cols-6">
+        <div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3 2xl:grid-cols-6">
           {Object.keys(STAGE_META).map((s) => (
             <div key={s} className="glass w-[82vw] max-w-[320px] shrink-0 snap-start rounded-2xl p-4 md:w-auto md:max-w-none md:min-h-[320px]">
               <div className="skeleton h-4 w-24" />
@@ -124,7 +124,7 @@ export default function Pipeline({ refreshToken }) {
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={() => setActiveId(null)}>
-          <motion.div variants={container} initial="hidden" animate="show" className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3 2xl:grid-cols-6">
+          <motion.div variants={container} initial="hidden" animate="show" className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3 2xl:grid-cols-6">
             {Object.entries(STAGE_META).map(([stageId, meta]) => (
               <Column
                 key={stageId}
@@ -185,11 +185,9 @@ function Column({ stageId, meta, candidates, moving }) {
         )}
       >
         <SortableContext items={candidates.map((c) => c.id)} strategy={verticalListSortingStrategy}>
-          <AnimatePresence mode="popLayout">
-            {candidates.map((c) => (
-              <SortableCard key={c.id} candidate={c} moving={moving === c.id} />
-            ))}
-          </AnimatePresence>
+          {candidates.map((c) => (
+            <SortableCard key={c.id} candidate={c} moving={moving === c.id} />
+          ))}
         </SortableContext>
 
         {total === 0 && (
@@ -225,10 +223,8 @@ function KanbanCard({ candidate, attributes, listeners, dragging, moving }) {
 
   return (
     <motion.div
-      layout
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.94 }}
       whileHover={{ y: -3 }}
       {...attributes}
       {...listeners}

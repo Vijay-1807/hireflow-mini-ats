@@ -35,16 +35,16 @@ export const gradientFor = (name = '') => {
 };
 
 export const formatSalary = (n) => {
-  if (n === null || n === undefined || n === '') return '—';
+  if (n === null || n === undefined || n === '') return '-';
   const v = Number(n);
-  if (Number.isNaN(v)) return '—';
-  if (v >= 100000) return `₹${(v / 100000).toFixed(v % 100000 === 0 ? 0 : 1)}L`;
-  if (v >= 1000) return `₹${(v / 1000).toFixed(0)}K`;
-  return `₹${v}`;
+  if (Number.isNaN(v)) return '-';
+  if (v >= 100000) return `Rs ${(v / 100000).toFixed(v % 100000 === 0 ? 0 : 1)}L`;
+  if (v >= 1000) return `Rs ${(v / 1000).toFixed(0)}K`;
+  return `Rs ${v}`;
 };
 
 export const formatDate = (s) => {
-  if (!s) return '—';
+  if (!s) return '-';
   const d = new Date(s.includes('T') ? s : s.replace(' ', 'T') + 'Z');
   if (Number.isNaN(d.getTime())) return s;
   const diff = Date.now() - d.getTime();

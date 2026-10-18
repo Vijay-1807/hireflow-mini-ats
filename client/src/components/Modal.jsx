@@ -1,4 +1,5 @@
 ﻿import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { pushOverlay, popOverlay } from '../lib/overlay';
@@ -12,10 +13,12 @@ export default function Modal({ open, onClose, title, subtitle, children, size =
 
   const widths = { sm: 'max-w-md', md: 'max-w-xl', lg: 'max-w-2xl', xl: 'max-w-3xl' };
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -24,11 +27,11 @@ export default function Modal({ open, onClose, title, subtitle, children, size =
             className="absolute inset-0 bg-ink-950/70 backdrop-blur-sm"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            initial={{ opacity: 0, scale: 0.97, y: 40 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 16 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-            className={`relative z-10 w-full ${widths[size]} glass-strong max-h-[90vh] overflow-hidden rounded-3xl`}
+            exit={{ opacity: 0, scale: 0.98, y: 30 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+            className={`relative z-10 flex max-h-[92vh] w-full ${widths[size]} flex-col glass-strong overflow-hidden rounded-t-3xl sm:max-h-[90vh] sm:rounded-3xl`}
           >
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-400/60 to-transparent" />
             <div className="flex items-start justify-between gap-4 border-b border-white/[0.07] px-6 py-5">
@@ -40,10 +43,11 @@ export default function Modal({ open, onClose, title, subtitle, children, size =
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="max-h-[calc(90vh-84px)] overflow-y-auto px-6 py-5">{children}</div>
+            <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
