@@ -12,7 +12,7 @@ A production-style mini ATS to **manage candidates, move them across hiring stag
 ## Live demo
 
 **Deployed app:** _[Add your Render URL here after deploy]_
-**Repository:** _[Add your GitHub repo URL here]_
+**Repository:** https://github.com/Vijay-1807/hireflow-mini-ats
 **Demo video (2–3 min):** _[Add Loom / Drive link here]_
 
 > Demo video script suggestion: Dashboard metrics → search "react" → filter by stage → drag a candidate from Screening to Interview on the Pipeline → open a candidate drawer → add a note → create a new candidate → bulk-move candidates.
