@@ -1,0 +1,20 @@
+{
+  "name": "mini-ats",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HireFlow — Mini Applicant Tracking System for the EarlyJobs.ai intern assignment",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "seed": "npm run seed --prefix server",
+    "reset": "npm run reset --prefix server",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server",
+    "setup": "npm run install:all && npm run build && npm run seed",
+    "test:e2e": "node tests/audit.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,228 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --brand: #c6f135;
+  --ink: #0a0b0d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-950 text-zinc-100 font-sans antialiased;
+  background-image:
+    radial-gradient(1000px 520px at 6% -12%, rgba(198, 241, 53, 0.055), transparent 62%),
+    radial-gradient(900px 520px at 104% 4%, rgba(96, 165, 250, 0.04), transparent 58%),
+    radial-gradient(820px 520px at 50% 116%, rgba(255, 255, 255, 0.025), transparent 60%);
+  background-attachment: fixed;
+}
+
+::selection {
+  @apply bg-brand-400/35 text-white;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(198, 241, 53, 0.75);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(161, 161, 170, 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.22);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(161, 161, 170, 0.4);
+}
+
+@layer components {
+  .glass {
+    background: rgba(16, 18, 22, 0.78);
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.03) inset, 0 18px 44px -30px rgba(0, 0, 0, 0.9);
+  }
+
+  .glass-strong {
+    background: rgba(13, 15, 18, 0.94);
+    backdrop-filter: blur(20px) saturate(130%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 70px -30px rgba(0, 0, 0, 1);
+  }
+
+  .glass-hover {
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .glass-hover:hover {
+    background: rgba(24, 27, 32, 0.9);
+    border-color: rgba(198, 241, 53, 0.22);
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(198, 241, 53, 0.1), 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  }
+
+  .glass-input {
+    @apply w-full rounded-xl border px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-all duration-200;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.09);
+  }
+
+  .glass-input::placeholder {
+    color: #71717a;
+  }
+
+  .glass-input:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .glass-input:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(198, 241, 53, 0.55);
+    box-shadow: 0 0 0 3px rgba(198, 241, 53, 0.16);
+  }
+
+  .glass-select {
+    @apply glass-input cursor-pointer pr-9;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px 12px;
+  }
+
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-ink-950;
+    background: #c6f135;
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.45) inset,
+      0 10px 26px -12px rgba(198, 241, 53, 0.55);
+    transition: all 0.18s ease;
+  }
+
+  .btn-primary:hover {
+    background: #d3f862;
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
+      0 14px 32px -12px rgba(198, 241, 53, 0.7);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    background: #afe010;
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-40;
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #d4d4d8;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #fff;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center rounded-lg p-2 transition-all duration-150 active:scale-95;
+    color: #a1a1aa;
+  }
+
+  .btn-icon:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #d4d4d8;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg;
+    background: rgba(255, 255, 255, 0.055);
+  }
+
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2.2s linear infinite;
+  }
+
+  .table-row-hover {
+    @apply transition-colors duration-150;
+  }
+
+  .table-row-hover:hover {
+    background: rgba(198, 241, 53, 0.035);
+  }
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.recharts-default-tooltip {
+  background: rgba(13, 15, 18, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 1) !important;
+}
+
+.recharts-tooltip-label {
+  color: #a1a1aa !important;
+  font-size: 11px !important;
+}
