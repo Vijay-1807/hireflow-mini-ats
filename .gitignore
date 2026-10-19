@@ -14,3 +14,4 @@ coverage/
 .idea/
 *.local
 tests/shots/
+client/package-lock.json
