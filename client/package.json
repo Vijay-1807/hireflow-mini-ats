@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node -e \"if(process.platform==='linux'){try{require('child_process').execSync('npm i --no-save @rollup/rollup-linux-x64-gnu@4.64.10',{stdio:'inherit'})}catch(e){console.warn('rollup linux optional skip:',e.message)}}\"",
+    "prebuild": "node -e \"if(process.platform==='linux'){try{require('child_process').execSync('npm i --no-save @esbuild/linux-x64@0.21.5 @rollup/rollup-linux-x64-gnu@4.64.10',{stdio:'inherit'})}catch(e){console.warn('linux optional skip:',e.message)}}\"",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -27,6 +27,7 @@
     "vite": "^5.4.9"
   },
   "optionalDependencies": {
+    "@esbuild/linux-x64": "0.21.5",
     "@rollup/rollup-linux-x64-gnu": "4.64.10"
   }
 }
