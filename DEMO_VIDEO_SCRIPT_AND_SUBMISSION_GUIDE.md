@@ -19,7 +19,7 @@ Follow these exact steps to deploy HireFlow on Render in less than 5 minutes for
 4. Render will read the included `render.yaml` automatically:
    - **Service Name:** `hireflow-mini-ats`
    - **Runtime:** `Node`
-   - **Build Command:** `npm install --prefix server && npm install --prefix client && npm run build --prefix client`
+   - **Build Command:** `npm install --include=dev --prefix server && npm install --include=dev --prefix client && npm run build --prefix client`
    - **Start Command:** `npm start --prefix server`
    - **Health Check Path:** `/api/health`
 5. Click **"Apply"**.
