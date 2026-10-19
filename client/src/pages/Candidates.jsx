@@ -7,7 +7,7 @@ import {
 import toast from 'react-hot-toast';
 import { candidatesApi } from '../api/client';
 import { useCandidateList, useDebounced, useFilterOptions } from '../hooks/useApi';
-import { STAGE_META, STAGE_ORDER, cn, formatDate } from '../lib/utils';
+import { STAGE_META, STAGE_ORDER, cn, formatDate, formatSalary } from '../lib/utils';
 import Avatar from '../components/Avatar';
 import StageBadge from '../components/StageBadge';
 import StarRating from '../components/StarRating';
@@ -185,17 +185,19 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
             ].map((v) => (
               <button
                 key={v.id}
+                id={`view-${v.id}-btn`}
                 onClick={() => setView(v.id)}
                 aria-label={v.label}
                 className={cn(
-                  'relative rounded-lg px-3 py-2 transition-colors',
+                  'relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors',
                   view === v.id ? 'text-white' : 'text-zinc-500 hover:text-zinc-300',
                 )}
               >
                 {view === v.id && (
                   <motion.span layoutId="view-pill" className="absolute inset-0 rounded-lg bg-white/[0.1]" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />
                 )}
-                <v.icon className="relative z-10 h-4 w-4" />
+                <v.icon className="relative z-10 h-3.5 w-3.5" />
+                <span className="relative z-10 hidden sm:inline">{v.label}</span>
               </button>
             ))}
           </div>
@@ -381,42 +383,100 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
           <Pagination meta={meta} page={page} setPage={setPage} />
         </motion.div>
       ) : (
-        <motion.div variants={container} initial="hidden" animate="show">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {rows.map((c) => (
-              <motion.button
-                key={c.id}
-                variants={item}
-                whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                onClick={() => openDetail(c)}
-                className="glass glass-hover group relative overflow-hidden rounded-2xl p-5 text-left"
-              >
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
-                  style={{ background: `${STAGE_META[c.stage]?.color}40` }}
-                />
-                <div className="relative flex items-start gap-3">
-                  <Avatar name={c.name} size="md" />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-bold text-white">{c.name}</p>
-                    <p className="truncate text-xs text-zinc-400">{c.role}</p>
-                    <p className="mt-0.5 truncate text-[11px] text-zinc-600">{c.location || '-'} - {(c.source || '').replace('-', ' ')}</p>
-                  </div>
-                </div>
-                <div className="relative mt-4 flex items-center justify-between">
-                  <StageBadge stage={c.stage} size="sm" />
-                  <StarRating value={c.rating || 0} readOnly size={12} />
-                </div>
-                <div className="relative mt-3 flex flex-wrap gap-1.5 border-t border-white/[0.06] pt-3">
-                  {(c.skills || []).slice(0, 3).map((s) => (
-                    <span key={s} className="chip !py-0.5 !text-[10px]">{s}</span>
-                  ))}
-                  {(c.skills || []).length > 3 && (
-                    <span className="chip !py-0.5 !text-[10px] !bg-white/[0.03]">+{c.skills.length - 3}</span>
+            {rows.map((c, i) => {
+              const cardSkills = Array.isArray(c.skills)
+                ? c.skills
+                : typeof c.skills === 'string'
+                ? (() => { try { return JSON.parse(c.skills); } catch { return c.skills.split(',').map((s) => s.trim()).filter(Boolean); } })()
+                : [];
+              const stageMeta = STAGE_META[c.stage] || { label: c.stage || 'Applied', color: '#60a5fa' };
+              const isSelected = selected.includes(c.id);
+
+              return (
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: Math.min(i * 0.02, 0.3) }}
+                  whileHover={{ y: -4, transition: { duration: 0.15 } }}
+                  onClick={() => openDetail(c)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(c); } }}
+                  className={cn(
+                    'glass glass-hover group relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-2xl p-5 text-left focus:outline-none focus:ring-2 focus:ring-brand-400',
+                    isSelected && 'ring-1 ring-brand-400/50 bg-brand-500/[0.04]',
                   )}
-                </div>
-              </motion.button>
-            ))}
+                >
+                  <div
+                    className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+                    style={{ background: `${stageMeta.color}40` }}
+                  />
+                  <div>
+                    <div className="relative flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 min-w-0">
+                        <Avatar name={c.name} size="md" />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-bold text-white group-hover:text-brand-300 transition-colors">{c.name}</p>
+                          <p className="truncate text-xs text-zinc-400">{c.role}</p>
+                          <p className="mt-0.5 truncate text-[11px] text-zinc-500">
+                            {c.location || 'Remote'} {c.source ? `· ${c.source.replace('-', ' ')}` : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSelect(c.id)}
+                          className="h-4 w-4 cursor-pointer accent-brand-500 rounded"
+                          aria-label={`Select ${c.name}`}
+                        />
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm(`Delete ${c.name}?`)) return;
+                            try {
+                              await candidatesApi.remove(c.id);
+                              toast.success('Deleted');
+                              setSelected((s) => s.filter((x) => x !== c.id));
+                              execute().catch(() => {});
+                            } catch (err) { toast.error(err.message); }
+                          }}
+                          className="btn-icon !p-1.5 opacity-0 group-hover:opacity-100 transition-opacity !text-zinc-500 hover:!text-red-400"
+                          aria-label={`Delete ${c.name}`}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="relative mt-4 flex items-center justify-between">
+                      <StageBadge stage={c.stage} size="sm" />
+                      <StarRating value={c.rating || 0} readOnly size={12} />
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between text-[11px] text-zinc-400">
+                      <span>{c.experience_years ? `${c.experience_years}y exp` : 'Fresher'}</span>
+                      <span className="font-medium text-zinc-300">{formatSalary(c.expected_salary)}</span>
+                    </div>
+                  </div>
+
+                  <div className="relative mt-3 flex flex-wrap gap-1.5 border-t border-white/[0.06] pt-3">
+                    {cardSkills.slice(0, 3).map((s) => (
+                      <span key={s} className="chip !py-0.5 !text-[10px]">{s}</span>
+                    ))}
+                    {cardSkills.length > 3 && (
+                      <span className="chip !py-0.5 !text-[10px] !bg-white/[0.03]">+{cardSkills.length - 3}</span>
+                    )}
+                    {cardSkills.length === 0 && (
+                      <span className="text-[10px] text-zinc-600 italic">No skills listed</span>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
           <div className="mt-4"><Pagination meta={meta} page={page} setPage={setPage} /></div>
         </motion.div>
