@@ -36,15 +36,20 @@ export default function CandidateDetail({ candidate, onUpdated, onDeleted, onEdi
   };
 
   const addNote = async (e) => {
-    e.preventDefault();
-    if (!note.trim()) return;
+    e?.preventDefault?.();
+    const text = note.trim();
+    if (!text || adding) return;
     setAdding(true);
     try {
-      await candidatesApi.addActivity(candidate.id, { message: note.trim(), type: 'note' });
+      const actRes = await candidatesApi.addActivity(candidate.id, { message: text, type: 'note' });
       setNote('');
       const res = await candidatesApi.get(candidate.id);
+      const updatedCandidate = res.data;
+      if (actRes?.data && Array.isArray(actRes.data)) {
+        updatedCandidate.activities = actRes.data;
+      }
       toast.success('Note added');
-      onUpdated?.(res.data);
+      onUpdated?.(updatedCandidate);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -178,6 +183,12 @@ export default function CandidateDetail({ candidate, onUpdated, onDeleted, onEdi
               className="glass-input"
               value={note}
               onChange={(e) => setNote(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  addNote(e);
+                }
+              }}
               placeholder="Add a note..."
             />
             <button type="submit" disabled={adding || !note.trim()} className="btn-primary !px-3.5">

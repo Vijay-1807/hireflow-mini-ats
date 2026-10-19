@@ -66,7 +66,15 @@ export default function CandidatesPage({ onOpenCandidate, refreshToken }) {
     onOpenCandidate?.(candidate);
     try {
       const res = await candidatesApi.get(candidate.id);
-      setDetail((d) => (d && d.id === res.data.id ? res.data : d));
+      setDetail((d) => {
+        if (!d || d.id !== res.data.id) return d;
+        const currentActivities = d.activities || [];
+        const fetchedActivities = res.data.activities || [];
+        const activities = currentActivities.length > fetchedActivities.length
+          ? currentActivities
+          : fetchedActivities;
+        return { ...res.data, activities };
+      });
     } catch (err) {
       toast.error(err.message);
     }
